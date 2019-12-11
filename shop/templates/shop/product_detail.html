@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ product.category }}</h1><br/>
+<img src="{{ product.image.url }}" class="rounded float-left"width="300" height="300">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-md-8">
+            <h3>{{ product.name }}</h3>
+            {{ product.description|linebreaks }}
+        </div>
+        <div class="col-xs-6 col-md-4" style="background-color:#2A9FD6">
+            <br/>
+            <br/>
+            <h4>가격 : <strong>{{ product.price }}</strong>원<br/>
+            제품 수량 : {{ product.amount }}
+            <br/>
+                구매 가능 : {{ product.available }}</h4>
+            <br/>
+            <br/>
+            {% if product.available %}
+            <form action="{% url 'cart:cart_add' product_slug=product.slug %}" method="GET">
+                주문 수량 : <input type="number" name="amount" min="1" value="1" style="width:40px;"><br/>
+                <input class="btn btn-secondary" type="submit" value="장바구니에 담기">
+                <a class="btn btn-success" href="#">구매하기</a>
+            </form>
+            <br/>
+            {% else %}
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    alert('{{ message }}')
+</script>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

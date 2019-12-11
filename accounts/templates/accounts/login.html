@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load socialaccount %}
+
+{% block account %}
+{% endblock %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+<div style="text-align:center; margin:100px 0 0 0;">
+    <h1>ANCHOVY MART</h1>
+    <br/>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.username.label }}
+        {{ form.username }}
+        <br/>
+        {{ form.password.label }}
+        {{ form.password }}
+        <br/>
+        <input class="btn btn-secondary" type="submit" value="로그인">
+    </form>
+    <br/>
+    <a href="{% url 'accounts:register' %}" class="btn btn-primary">회원가입하기</a>
+    <a href="{% url 'shop:all_products' %}" class="btn btn-info">그냥 둘러보기</a><br/><br/>
+    <a href="{% provider_login_url 'naver' %}" class="btn btn-success">네이버로 로그인 하기</a>
+</div>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    alert('{{ message }}')
+</script>
+{% endfor %}
+{% endif %}
+{% endblock %}

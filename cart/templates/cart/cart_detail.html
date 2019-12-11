@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand">장바구니</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav mr-auto">
+            <strong>총 가격 : {{ product_total_price }} 원</strong>
+        </ul>
+
+        <a href="{% url 'cart:cart_clear' %}" class="btn btn-secondary">전체 비우기</a>
+        <a href="#" class="btn btn-success">전체 구매하기</a>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}
+
+{% if carts %}
+<div class="container-fluid">
+    <div class="row">
+        {% for cart in carts %}
+        <div class="col-xs-6 col-sm-4">
+            <img src="{{ cart.product.image.url }}" class="rounded float-left" width="100" height="100">
+            상품 : {{ cart.product.name }} <br/>
+            상품가격 : {{ cart.product.price }}원<br/>
+            수량 : {{ cart.amount }} <br/>
+            <a href="{% url 'cart:cart_delete' cart.product.id %}" class="btn btn-secondary btn-sm">지우기</a>
+            <a href="#" class="btn btn-success btn-sm">구매하기</a>
+            <br/><br/><br/>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+
+{% endif %}
+
+{% endblock %}
