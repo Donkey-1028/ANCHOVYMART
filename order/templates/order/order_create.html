@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+{% endblock %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+$(function(){
+    $('.order').on('submit', function (e) {
+        var order = AjaxCreateOrder(e);
+        var order_id = order.order_id;
+        var price = order.price
+        if (order_id == false) {
+            alert('Order생성 실패 \n다시 시도해주세요.');
+            return false;
+        } else if (price == false) {
+            alert('가격 전달 실패 \n 다시 시도해주세요.');
+            return false;
+        }
+        var merchant_id = AjaxCreateMerchant(e, order_id, price);
+        alert(merchant_id);
+    });
+});
+
+    function AjaxCreateOrder(e) {
+        e.preventDefault();
+        var order_id = '';
+        var request = $.ajax({
+            method: "POST",
+            url: '{% url "order:cart_order_create_ajax" %}',
+            async: false,
+            data: $('.order').serialize()
+        });
+        request.done(function(data) {
+            if (data.order_id) {
+                order_id = data.order_id;
+            }
+            if (data.price) {
+                price = data.price;
+            }
+        });
+        request.fail(function() {
+            alert('AjaxCreateOrder 에러')
+        });
+        return {
+            order_id: order_id,
+            price: price
+        };
+    }
+
+
+    function AjaxCreateMerchant(e, order_id, price) {
+        e.preventDefault();
+        var merchant_id = '';
+        var request = $.ajax({
+            method: "POST",
+            url: '{% url "order:merchant_create_ajax" %}',
+            async: false,
+            data:{
+                order_id : order_id,
+                price : price,
+                csrfmiddlewaretoken : '{{ csrf_token }}'
+            }
+        });
+        request.done(function(data){
+            if(data.merchant_id){
+                merchant_id = data.merchant_id;
+            }
+        });
+        request.fail(function(){
+            alert('AjaxCreateMerchant 에러');
+        });
+        return merchant_id;
+    }
+</script>
+
+<div class="container-fluid">
+    <div class="row">
+        {% for cart in carts %}
+        <div class="col-xs-6 col-sm-4">
+            <img src="{{ cart.product.image.url }}" class="rounded float-left" width="100" height="100">
+            상품 : {{ cart.product.name }} <br/>
+            상품가격 : {{ cart.product.price }}원<br/>
+            수량 : {{ cart.amount }} <br/>
+            <br/><br/><br/>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<h1 style="text-align:center;">
+전체 가격 : {{ carts_total_price }} <br/>
+전체 수량 : {{ carts_amount }}
+</h1>
+<form method="POST" action="" class="order">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="button" value="주문하기">
+</form>
+
+{% endblock %}
+

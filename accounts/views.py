@@ -1,10 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, LogoutView
-
-from django import forms
-from .forms import *
-
 from django.contrib import messages
+
+from .forms import *
 
 
 class AccountsLoginView(LoginView):

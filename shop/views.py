@@ -1,12 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.contrib import messages
 
 from .models import *
-
-from django.core.paginator import Paginator
-
-from django.db.models import Q
-
-from django.contrib import messages
 
 
 def product_category(request, slug=None):
@@ -37,7 +34,6 @@ def product_category(request, slug=None):
 
 
 def product_detail(request, pk, product_slug):
-    #slug = slugify(product_slug, allow_unicode=True)
     categories = Category.objects.all()
     product = get_object_or_404(Product, pk=pk, slug=product_slug)
     return render(request, 'shop/product_detail.html', {'product': product, 'categories': categories})

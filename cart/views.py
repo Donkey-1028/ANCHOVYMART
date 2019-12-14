@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_list_or_404, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .models import Cart
+
 from shop.models import Product
 
-from django.contrib.auth.decorators import login_required
-
-from django.contrib import messages
 
 @login_required
 def cart_detail(request):
@@ -21,8 +21,6 @@ def cart_detail(request):
         product_total_price = 0
         for i in range(len(carts)):
             product_total_price += carts[i].get_total_price()
-
-
 
     return render(request, 'cart/cart_detail.html', {'carts': carts,
                                                      'product_total_price': product_total_price})

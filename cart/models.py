@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+
 from shop.models import Product
 
 """상품의 가격이 DecimalField이기 때문에 전체가격도 Decimal로 표현하기 위해 임포트"""

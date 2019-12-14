@@ -12,7 +12,7 @@
         </ul>
 
         <a href="{% url 'cart:cart_clear' %}" class="btn btn-secondary">전체 비우기</a>
-        <a href="#" class="btn btn-success">전체 구매하기</a>
+        <a href="{% url 'order:cart_order_create' %}" class="btn btn-success">전체 구매하기</a>
     </div>
 </nav>
 {% endblock %}
