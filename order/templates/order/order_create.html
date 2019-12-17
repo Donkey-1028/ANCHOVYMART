@@ -4,23 +4,43 @@
 {% endblock %}
 
 {% block content %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 <script type="text/javascript">
-
 $(function(){
+    IMP.init('imp52142172');
     $('.order').on('submit', function (e) {
         var order = AjaxCreateOrder(e);
         var order_id = order.order_id;
-        var price = order.price
+        var price = Math.round(parseFloat(order.price));
         if (order_id == false) {
             alert('Order생성 실패 \n다시 시도해주세요.');
             return false;
-        } else if (price == false) {
-            alert('가격 전달 실패 \n 다시 시도해주세요.');
-            return false;
         }
-        var merchant_id = AjaxCreateMerchant(e, order_id, price);
-        alert(merchant_id);
+        var merchant_id = AjaxCreateMerchant(e, order_id);
+
+        if (merchant_id) {
+            IMP.request_pay({
+                pay_method : 'card',
+                merchant_uid : merchant_id,
+                name : 'ANCHOVY MART',
+                amount : price,
+                buyer_name : $('input[name="buyer"]').val(),
+                buyer_addr : $('input[name="address"]').val(),
+            }, function(rsp) {
+                if ( rsp.success ) {
+                    AjaxValidationTransaction(e, order_id, rsp.imp_uid, rsp.merchant_uid, rsp.paid_amount);
+                    var msg = '결제가 완료되었습니다.';
+                    msg += '\n고유ID : ' + rsp.imp_uid;
+                    msg += '\n상점 거래ID : ' + rsp.merchant_uid;
+                    msg += '\n결제 금액 : ' + rsp.paid_amount;
+                } else {
+                    var msg = '결제에 실패하였습니다.';
+                    msg += '\n에러내용 : ' + rsp.error_msg;
+                }
+                alert(msg);
+                AjaxChangeProductAmount(e, order_id);
+            });
+        }
     });
 });
 
@@ -45,13 +65,12 @@ $(function(){
             alert('AjaxCreateOrder 에러')
         });
         return {
-            order_id: order_id,
-            price: price
+            'order_id': order_id,
+            'price': price
         };
     }
 
-
-    function AjaxCreateMerchant(e, order_id, price) {
+    function AjaxCreateMerchant(e, order_id) {
         e.preventDefault();
         var merchant_id = '';
         var request = $.ajax({
@@ -60,8 +79,7 @@ $(function(){
             async: false,
             data:{
                 order_id : order_id,
-                price : price,
-                csrfmiddlewaretoken : '{{ csrf_token }}'
+                csrfmiddlewaretoken: '{{ csrf_token }}',
             }
         });
         request.done(function(data){
@@ -73,6 +91,51 @@ $(function(){
             alert('AjaxCreateMerchant 에러');
         });
         return merchant_id;
+    }
+
+    function AjaxValidationTransaction(e, order_id, imp_id, merchant_id, amount) {
+        e.preventDefault()
+        var request = $.ajax({
+            method: "POST",
+            url: '{% url "order:order_validation_ajax" %}',
+            async: false,
+            data: {
+                order_id: order_id,
+                imp_id: imp_id,
+                merchant_id: merchant_id,
+                amount: amount,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }
+        });
+        request.done(function(data) {
+            if (data.done) {
+                alert('결제 검증 완료');
+            }
+        });
+        request.fail(function() {
+            alert('AjaxValidationTransaction 에러')
+        })
+    }
+
+    function AjaxChangeProductAmount(e, order_id) {
+        e.preventDefault()
+        var request = $.ajax({
+            method : "POST",
+            url : '/order/order_complete/' + order_id,
+            async : false,
+            data: {
+                order_id : order_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }
+        });
+        request.done(function(data){
+            if(data.change){
+                location.href="/order/order_complete/" + order_id;
+            }
+        });
+        request.fail(function(){
+            location.href="/";
+        });
     }
 </script>
 
@@ -93,11 +156,14 @@ $(function(){
 전체 가격 : {{ carts_total_price }} <br/>
 전체 수량 : {{ carts_amount }}
 </h1>
-<form method="POST" action="" class="order">
+<br/>
+<br/>
+<form method="POST" action="" class="order" style="text-align:center;">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" class="button" value="주문하기">
+    <h4>{{ form.buyer.label }}</h4> {{ form.buyer }}<br/>
+    <h4>{{ form.address.label }}</h4> {{ form.address }}<br/>
+    <input type="submit" class="btn btn-success" value="주문하기">
 </form>
-
+<br/><br/><br/><br/><br/><br/>
 {% endblock %}
 

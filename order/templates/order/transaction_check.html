@@ -1,0 +1,16 @@
+imp uid : {{ transaction.imp_uid }}<br/>
+merchant uid : {{ transaction.merchant_uid }} <br/>
+{% if transaction.status %}
+결제 : 결제 완료 <br/>
+{% else %}
+결제 : 결제 실패 <br/>
+{% endif %}
+결제 날짜 : {{ transaction.created }} <br/>
+
+결제 대행사 결제 상태 : {{ result.status }}<br/><br/>
+
+물품 :<br/>
+{% for product in products %}
+{{ product.product }}({{ product.product.price }}원)<br/>
+{% endfor %}
+

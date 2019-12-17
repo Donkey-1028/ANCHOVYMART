@@ -12,7 +12,12 @@
         </ul>
 
         <a href="{% url 'cart:cart_clear' %}" class="btn btn-secondary">전체 비우기</a>
+        {% if product_total_price %}
         <a href="{% url 'order:cart_order_create' %}" class="btn btn-success">전체 구매하기</a>
+        {% else %}
+        <a href="#" class="btn btn-success">전체 구매하기</a>
+        {% endif %}
+
     </div>
 </nav>
 {% endblock %}

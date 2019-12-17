@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand">결제 확인</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav mr-auto">
+            <strong>결제 실패 : {{ fail }}개 </strong>
+        </ul>
+
+        <a href="{% url 'order:order_delete' %}" class="btn btn-danger">결제 실패 삭제</a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">영수증</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <article></article>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<table class="table table-hover" style="width:800px; text-align:center; margin: 50px auto;">
+    <thead>
+    <tr class="table-secondary">
+        <th scope="col">Order</th>
+        <th scope="col">주문자</th>
+        <th scope="col">주소</th>
+        <th scope="col">가격</th>
+        <th scope="col">상태</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+    <tr class="table-primary" style="color:black;">
+        <th scope="row">
+            <button type="button" class="btn btn-secondary" data-toggle="modal"
+                                data-target="#exampleModal"
+                                onclick="fetchPage('{% url 'order:transaction_check' order.id %}')">영수증</button>
+        </th>
+        <td>{{ order.buyer }}</td>
+        <td>{{ order.address }}</td>
+        <td>{{ order.price }}</td>
+        {% if order.status %}
+        <td><strong>주문 완료</strong></td>
+        {% else %}
+        <td><strong>주문 실패</strong></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    function fetchPage(name) {
+        fetch(name).then(function(response){
+            response.text().then(function(text){
+                document.querySelector('article').innerHTML = text;
+            })
+        });
+    }
+</script>
+{% endblock %}

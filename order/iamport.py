@@ -27,7 +27,7 @@ def find_transaction(merchant_uid, *args, **kwargs):
         headers = {
             'Authorization': access_token
         }
-        url = 'https://api.iamport.kr/payments/find' + merchant_uid
+        url = 'https://api.iamport.kr/payments/find/' + merchant_uid
 
         req = requests.post(url, headers=headers)
         res = req.json()
@@ -59,9 +59,10 @@ def payments_prepare(merchant_uid, price, *args, **kwargs):
         }
 
         url = 'https://api.iamport.kr/payments/prepare'
-        req = requests(url, data=access_data, headers=headers)
+        req = requests.post(url, data=access_data, headers=headers)
+        res = req.json()
 
-        if req['code'] is not 0:
+        if res['code'] is not 0:
             raise ValueError('통신에러')
 
     else:
