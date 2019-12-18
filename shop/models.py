@@ -59,4 +59,10 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('shop:product_detail', args=[self.id, self.slug])
 
+    def check_amount(self):
+        """상품의 재고를 확인할 때 재고가 없을 경우 available 필드를 false로 돌려서
+        판매를 중단하게 만드는 함수"""
+        if self.amount is 0:
+            self.available = False
+            self.save()
 # Create your models here.

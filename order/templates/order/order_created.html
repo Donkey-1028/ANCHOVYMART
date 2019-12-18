@@ -4,7 +4,32 @@
 {% endblock %}
 
 {% block content %}
-{{ order.user }}
-{{ order }}
+<div style="text-align:center;">
+    <br/>
+    <h1 >주문 결과</h1>
+    주문하신 고객님은 <h5 style="display:inline;">{{ order.buyer }}</h5> 입니다.<br/><br/>
+    Imp uid : <h5 style="display:inline;">{{ order.OrderTransaction.all.0.imp_uid }}</h5><br/>
+    Merchant uid : <h5 style="display:inline;">{{ order.OrderTransaction.all.0.merchant_uid }}</h5><br/><br/>
+    'Imp uid' 와 'Merchant uid' 는 <h5 style="display:inline;">환불, 결제 취소</h5>에 사용되는 고유번호 입니다.<br/>
+    꼭 기억해주세요. 상단의 '결제 확인' > '영수증'을 통해서 확인할 수 있습니다.<br/><br/>
+    결제 금액 : <h5 style="display:inline;">{{ order.price }}</h5>원 <br/>
+    배송지 : <h5 style="display:inline;">{{ order.address }}</h5><br/>
+    주문 일자 : {{ order.created }} <br/>
+    {% if order.status %}
+    주문 상태 : 주문 완료 <br/><br/>
+    {% else %}
+    주문 상태 : 주문 실패 <br/><br/>
+    {% endif %}
+
+    <h5 style="display:inline;">주문 실패 경우</h5><br/>
+    사용자의 결제취소, <br/>
+    DB_transaction 와 Iamport_trasaction 검증실패, <br/>
+    Imp uid, Merchant uid 생성실패, <br/>
+    etc...
+
+
+
+</div>
+
 
 {% endblock %}

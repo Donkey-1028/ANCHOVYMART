@@ -4,12 +4,10 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 
-from cart.models import Cart
-
-
 from .models import *
 from .forms import OrderCreateForm
 
+from cart.models import Cart
 
 @login_required
 def cart_order_create(request):
@@ -145,8 +143,7 @@ class OrderValidationAjaxView(LoginRequiredMixin, View):
             order.save()
 
             """주문을 성공적으로 완료했을 경우 장바구니를 비움"""
-            available_products = Product.objects.filter(available=True)
-            Cart.objects.filter(user_id=request.user.id, product_id__in=available_products).delete()
+            Cart.objects.filter(user_id=request.user.id).delete()
 
             data = {
                 'done': True
@@ -163,7 +160,7 @@ class OrderComplete(LoginRequiredMixin, View):
         """get으로 접근할 경우 주문에 대한 데이터만 출력"""
         order_id = kwargs['order_id']
         order = Order.objects.get(id=order_id)
-
+        #order.OrderTransaction.all()[0].imp_uid 등등
 
         return render(request, 'order/order_created.html', {'order': order})
 
@@ -173,10 +170,13 @@ class OrderComplete(LoginRequiredMixin, View):
         order = Order.objects.get(id=order_id)
 
         for i in range(len(order.OrderProduct.all())):
-            """어떤 상품과 몇개의 수량을 가져오는지 수정할 필요가 있음."""
+            """주문한 상품만큼 해당 상품 수량에서 빼기."""
             change = order.OrderProduct.all()[i].product
             change.amount -= order.OrderProduct.all()[i].amount
             change.save()
+
+            """만약 구매한 물품의 재고가 0이 될 경우 판매 할수 없도록 만듬."""
+            Product.objects.get(id=change.id).check_amount()
 
         data = {
             'change': True
@@ -187,7 +187,7 @@ class OrderComplete(LoginRequiredMixin, View):
 class OrderCheck(LoginRequiredMixin, View):
     """주문이 제대로 되었는지 사용자가 확인하는 뷰"""
     def get(self, request):
-        orders = get_list_or_404(Order, user_id=request.user.id)
+        orders = Order.objects.filter(user_id=request.user.id)
         fail = 0
 
         for i in range(len(orders)):

@@ -12,7 +12,17 @@ def cart_detail(request):
     """장바구니 세부목록 출력 위한 뷰."""
     try:
         products = Product.objects.filter(available=True)
-        carts = get_list_or_404(Cart, user_id=request.user.id, product_id__in=products)
+        """filter가 아닌 get을 이용했으면 더 간단했을듯.ㅋ"""
+        carts = Cart.objects.filter(user_id=request.user.id, product_id__in=products)
+
+        for i in range(len(carts)):
+            """장바구니에 있는 상품들이 현재 남아있는 재고를 초과할 경우 삭제하도록 함."""
+            if products.filter(id=carts[i].product_id).values('amount')[0]['amount'] < carts[i].amount:
+                """carts의 상품id로 products를 필터를 진행후, amount값이 장바구니에 저장되어있는 상품 amount보다 작을경우
+                해당 장바구니를 삭제후 메세지를 전송"""
+                carts[i].delete()
+                messages.warning(request, '{ ' + carts[i].product.name + ' }' + ' 상품이 재고를 초과해서 삭제되었습니다.')
+                return redirect('cart:cart_detail')
     except:
         product_total_price = 0
         carts = None
@@ -74,4 +84,5 @@ def clear(request):
     cart = Cart.objects.filter(user_id=request.user.id).delete()
 
     return render(request, 'cart/cart_detail.html')
+
 # Create your views here.
