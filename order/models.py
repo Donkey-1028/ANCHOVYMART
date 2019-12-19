@@ -46,6 +46,7 @@ class OrderProduct(models.Model):
         return decimal.Decimal(self.price) * int(self.amount)
 
 
+
 class OrderTransactionManager(models.Manager):
     """로컬 영수증을 만드는 모델의 manager."""
     def create_new_transaction(self, order, price):
