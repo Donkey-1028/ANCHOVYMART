@@ -168,20 +168,22 @@ class OrderComplete(LoginRequiredMixin, View):
         """ajax로 post로 접근할 경우 주문한 수량만큼 DB에서 해당 품목의 수량을 빼는 뷰"""
         order_id = request.POST.get('order_id')
         order = Order.objects.get(id=order_id)
+        if order.status is True:
+            for i in range(len(order.OrderProduct.all())):
+                """주문한 상품만큼 해당 상품 수량에서 빼기."""
+                change = order.OrderProduct.all()[i].product
+                change.amount -= order.OrderProduct.all()[i].amount
+                change.save()
 
-        for i in range(len(order.OrderProduct.all())):
-            """주문한 상품만큼 해당 상품 수량에서 빼기."""
-            change = order.OrderProduct.all()[i].product
-            change.amount -= order.OrderProduct.all()[i].amount
-            change.save()
+                """만약 구매한 물품의 재고가 0이 될 경우 판매 할수 없도록 만듬."""
+                Product.objects.get(id=change.id).check_amount()
 
-            """만약 구매한 물품의 재고가 0이 될 경우 판매 할수 없도록 만듬."""
-            Product.objects.get(id=change.id).check_amount()
-
-        data = {
-            'change': True
-        }
-        return JsonResponse(data)
+            data = {
+                'change': True
+            }
+            return JsonResponse(data)
+        else:
+            return redirect('order:cart_order_create')
 
 
 class OrderCheck(LoginRequiredMixin, View):
