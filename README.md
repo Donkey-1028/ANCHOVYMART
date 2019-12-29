@@ -4,10 +4,10 @@
 	anchovy란 '멸치'를 의미합니다. 제가 운동식품, 용품을 구매하는데 자주사용하는 E-commerce인
     'MONSTERMART'에서 영감을 얻었습니다.
     
-    ANCHOVYMART는 Iamport사의 API모듈을 결제모듈로 사용하는 E-commerce 사이트입니다.
+    ANCHOVYMART는 Iamport사의 API을 이용한 E-commerce입니다.
 
 ## 2. 프로젝트 제작 목적
-	 API에 대한 정확한 이해와, 사용해보는 것과 아마존 EC2를 이용한 배포경험 쌓는것을
+	 API에 대한 정확한 이해, 사용해보는 것과 아마존 EC2를 이용한 배포경험 쌓는것을
      제작목적으로 두었습니다.
 
 ## 3. 주요 기능
