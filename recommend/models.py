@@ -9,4 +9,6 @@ class Rate(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rate= models.PositiveIntegerField(default=1, validators=[MaxValueValidator(5), MinValueValidator(1)])
 
+    def __str__(self):
+        return self.order_product.product.name + '/' +str(self.rate)
 # Create your models here.
