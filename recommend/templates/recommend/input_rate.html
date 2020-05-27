@@ -1,5 +1,18 @@
-<form method="POST" action="">
-    {% csrf_token %}
-    {{ form.rate }}
-    <input type="submit" value="submit">
-</form>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<img src="{{ order_product.product.image.url }}" class="rounded"width="300" height="300" style="display:block; margin-left: auto; margin-right: auto;">
+<div style="text-align:center;">
+    상품명 : {{ order_product.product.name }}<br/>
+    가격 : {{ order_product.product.price }}<br/>
+    구입날짜 : {{ order_product.order.created }}
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form.rate }}
+        <input type="submit" value="submit" class="btn btn-primary">
+    </form>
+</div>
+
+
+{% endblock %}
