@@ -13,7 +13,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = [
-        'name', 'slug', 'category', 'price', 'amount', 'available', 'created'
+        'name', 'slug', 'category', 'price', 'amount', 'available','rated', 'created'
     ]
     prepopulated_fields = {'slug': ('name',)}
 

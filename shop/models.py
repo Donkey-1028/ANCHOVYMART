@@ -46,6 +46,9 @@ class Product(models.Model):
     그럴 경우를 위해 만들었다"""
     available = models.BooleanField('구매가능여부', default=True)
 
+    rated = models.DecimalField('평점', max_digits=10, decimal_places=2, default=0)
+    rate_count = models.PositiveIntegerField('참여자 수', default=0)
+
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
     class Meta:
