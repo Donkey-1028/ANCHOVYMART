@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand">Recommend</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav mr-auto">
+            <strong>평점 목록 : {{ count }}개 </strong>
+        </ul>
+
+        <a href="#" class="btn btn-success">추천상품보기</a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<table class="table table-hover" style="width:800px; text-align:center; margin: 50px auto;">
+    <thead>
+    <tr class="table-secondary">
+        <th scope="col">Rate</th>
+        <th scope="col">상품명</th>
+        <th scope="col">구입날짜</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order_product in object_list %}
+    <tr class="table-primary" style="color:black;">
+        <th scope="row">
+            <a href="{% url 'recommend:input_rate' order_product.id %}"
+               class="btn btn-secondary">평점주기</a>
+        </th>
+        <td>{{ order_product.product.name }}</td>
+        <td>{{ order_product.order.created }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    alert('{{ message }}');
+</script>
+{% endfor %}
+{% endif %}
+
+{% endblock %}

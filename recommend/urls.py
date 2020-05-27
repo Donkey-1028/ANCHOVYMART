@@ -1,10 +1,11 @@
 from django.urls import path
-from .views import test, InputRate
+from .views import  InputRate, ShowRecommendProducts, ShowUnratedProducts
 
 app_name = 'recommend'
 
 urlpatterns = [
-    path('test/', test, name='test'),
-    path('input_rate/', InputRate.as_view(), name='input_rate'),
+    path('input_rate/<int:order_product_pk>', InputRate.as_view(), name='input_rate'),
+    path('show_recommend_products/', ShowRecommendProducts.as_view(), name='show_recommend_products'),
+    path('show_unrated_products/',ShowUnratedProducts.as_view(), name='show_unrated_products'),
 
 ]
