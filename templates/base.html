@@ -25,6 +25,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'order:order_check' %}">결제 확인</a>
             </li>
+            <li>
+                <a class="nav-link" href="{% url 'recommend:show_recommend_products' %}">Recommend</a>
+            </li>
         </ul>
         {% if user.is_authenticated %}
         <div class="navbar-brand">{{ user }}님 안녕하세요.</div>
