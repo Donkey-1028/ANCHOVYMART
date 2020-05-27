@@ -39,6 +39,8 @@ class OrderProduct(models.Model):
     price = models.DecimalField('가격', max_digits=10, decimal_places=2)
     amount = models.PositiveIntegerField(default=1)
 
+    rated = models.BooleanField(default=False)
+
     def __str__(self):
         return str(self.id)
 
@@ -48,7 +50,6 @@ class OrderProduct(models.Model):
 
 
 class OrderTransactionManager(models.Manager):
-    """로컬 영수증을 만드는 모델의 manager."""
     def create_new_transaction(self, order, price):
         """주문서를 받아서 그 주문에 해당하는 고유의 merchant_uid 생성."""
         if not order:
@@ -121,7 +122,7 @@ def order_validation(sender, instance, created, *args, **kwargs):
         if not iamport_transaction or not db_transaction:
             raise ValueError('결제 검증 오류')
     else:
-        pass
+        raise ValueError('imp_uid 오류')
 
 
 """signals로 Ordertransaction이 생성될때 order_validation 함수 실행
