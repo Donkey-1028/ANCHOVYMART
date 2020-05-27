@@ -10,13 +10,12 @@
             {{ product.description|linebreaks }}
         </div>
         <div class="col-xs-6 col-md-4" style="background-color:#2A9FD6">
-            <br/>
-            <br/>
             <h4>가격 : <strong>{{ product.price }}</strong>원<br/>
             제품 수량 : {{ product.amount }}
             <br/>
-                구매 가능 : {{ product.available }}</h4>
-            <br/>
+                구매 가능 : {{ product.available }}<br/>
+            평점 : {{ product.get_rate }}</h4>
+
 
             {% if product.available %}
             <form action="{% url 'cart:cart_add' product_slug=product.slug %}" method="GET">
