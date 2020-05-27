@@ -36,6 +36,7 @@ def product_category(request, slug=None):
 def product_detail(request, pk, product_slug):
     categories = Category.objects.all()
     product = get_object_or_404(Product, pk=pk, slug=product_slug)
+    product.get_rate()
     return render(request, 'shop/product_detail.html', {'product': product, 'categories': categories})
 
 
