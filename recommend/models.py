@@ -10,5 +10,5 @@ class Rate(models.Model):
     rate= models.PositiveIntegerField(default=1, validators=[MaxValueValidator(5), MinValueValidator(1)])
 
     def __str__(self):
-        return self.order_product.product.name + '/' +str(self.rate)
+        return self.order_product.product.name + '/' +str(self.rate) + '/' + str(self.user)
 # Create your models here.
