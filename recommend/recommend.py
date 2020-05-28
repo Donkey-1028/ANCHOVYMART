@@ -21,9 +21,15 @@ def sim_pearson(data, name1, name2):
             avg_name1 = data[name1][products]
             avg_name2 = data[name2][products]
             count += 1
+    try:
+        avg_name1 = avg_name1 / count
+    except:
+        avg_name1 = 0
 
-    avg_name1 = avg_name1 / count
-    avg_name2 = avg_name2 / count
+    try:
+        avg_name2 = avg_name2 / count
+    except:
+        avg_name2 = 0
 
     sum_name1 = 0
     sum_name2 = 0
