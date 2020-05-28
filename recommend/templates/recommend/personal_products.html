@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand">Recommend</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarColor02">
+        <ul class="navbar-nav mr-auto">
+            <strong>개인추천상품</strong>
+        </ul>
+
+        <a href="{% url 'recommend:non_personal_products' %}" class="btn btn-success">전체추천상품</a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="card-columns">
+{% for product in object_list %}
+    <div class="card border-primary mb-3" style="min-width: 20rem; text-align:center;">
+        <div class="card-header"><a href="{{ product.category.get_absolute_url }}">{{ product }}</a></div>
+        <div class="card-body"><a href="{{ product.get_absolute_url }}">
+            <h4 class="card-title">{{ product }}</h4>
+            <img src="{{ product.image.url }}" width="200" height="200"><br/>
+            <p class="card-text">
+                가격 : {{ product.price }} <br/>
+                수량 : {{ product.amount }} <br/>
+            </p>
+        </a></div>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

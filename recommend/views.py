@@ -2,13 +2,15 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from django.views.generic.list import ListView
 from django.contrib import messages
-from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from order.models import OrderProduct
 
 from shop.models import Product
 
 from .forms import RateForm
+from .recommend import *
+
 
 
 class InputRate(View):
@@ -40,17 +42,17 @@ class InputRate(View):
         return redirect('recommend:show_recommend_products')
 
 
-class ShowRecommendProducts(View):
+class ShowRecommendProducts(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         if OrderProduct.objects.filter(user_id=self.request.user.id, rated=False):
             messages.warning(request, '평점을 부여하지 않은 상품들이 있습니다. 평점을 입력해주세요.')
             return redirect('recommend:show_unrated_products')
         elif OrderProduct.objects.filter(user_id=self.request.user.id):
-            print('알고리즘처리')
+            return redirect('recommend:personal_products')
         else:
-            print('all')
-        return redirect('/')
+            return redirect('recommend:non_personal_products')
+
 
 class ShowUnratedProducts(ListView):
     model = OrderProduct
@@ -72,3 +74,24 @@ class NonPersonalProducts(ListView):
     def get_queryset(self):
         return Product.objects.all().order_by('-rate')[:6]
 
+
+class PersonalProducts(ListView):
+    model = Product
+    template_name = 'recommend/personal_products.html'
+
+    def get(self, request):
+        if len(Rate.objects.filter(user_id=self.request.user.id)) < 1:
+            messages.warning(request, '구매후 평점 기록이 없어서 개인추천이 불가합니다.')
+            return redirect('recommend:non_personal_products')
+        else:
+            return super().get(request)
+
+    def get_queryset(self):
+        recommend_result = getRecommendation(make_ratings_expand(), self.request.user.username)
+
+        queryset = []
+
+        for i in range(3):
+            queryset.append(Product.objects.get(id=recommend_result[i][1]))
+
+        return queryset

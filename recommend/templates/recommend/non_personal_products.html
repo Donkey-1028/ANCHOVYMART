@@ -8,10 +8,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarColor02">
         <ul class="navbar-nav mr-auto">
-            <strong>전체 추천 상품</strong>
+            <strong>전체추천상품</strong>
         </ul>
-
-        <a href="#" class="btn btn-success">개인 추천 상품 보기</a>
+        <a href="{% url 'recommend:personal_products' %}" class="btn btn-success">개인추천상품</a>
     </div>
 </nav>
 {% endblock %}
@@ -49,4 +48,12 @@
         </li>
     </ul>
 </div>
+
+{% if messages %}
+{% for message in messages %}
+<script>
+    alert('{{ message }}');
+</script>
+{% endfor %}
+{% endif %}
 {% endblock%}

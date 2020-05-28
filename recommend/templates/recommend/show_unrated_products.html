@@ -11,8 +11,8 @@
         <ul class="navbar-nav mr-auto">
             <strong>평점 목록 : {{ count }}개 </strong>
         </ul>
-
-        <a href="#" class="btn btn-success">추천상품보기</a>
+        <a href="{% url 'recommend:non_personal_products' %}" class="btn btn-success">전체추천상품</a>&nbsp;
+        <a href="#" class="btn btn-success">개인추천상품</a>
     </div>
 </nav>
 {% endblock %}
