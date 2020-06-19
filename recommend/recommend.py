@@ -17,7 +17,7 @@ def sim_pearson(data, name1, name2):
     avg_name2 = 0
     count = 0
     for products in data[name1]:
-        if products in data[name2]:  # 같은 영화를 봤다면
+        if products in data[name2]:  # 같은 상품을 구매했고, 평점 데이터를 매겼다면
             avg_name1 = data[name1][products]
             avg_name2 = data[name2][products]
             count += 1
@@ -67,8 +67,8 @@ def getRecommendation(data, person, k=3, sim_function=sim_pearson):
         print(sim, name)
         if sim < 0: continue  # 유사도가 양수인 사람만
         for product in data[name]:
-            if product not in data[person]:  # name이 평가를 내리지 않은 영화
-                score += sim * data[name][product]  # 그사람의 영화평점 * 유사도
+            if product not in data[person]:  # name이 평가를 내리지 않은 상품
+                score += sim * data[name][product]  # 그사람의 상품평점 * 유사도
                 score_dic.setdefault(product, 0)  # 기본값 설정
                 score_dic[product] += score  # 합계 구함
 
